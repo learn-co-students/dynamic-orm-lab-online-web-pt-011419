@@ -9,4 +9,5 @@ class Student < InteractiveRecord
       attr_accessor column_name.to_sym
     end
     
+ 
 end
