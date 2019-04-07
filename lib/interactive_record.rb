@@ -1,5 +1,6 @@
 require_relative "../config/environment.rb"
 require 'active_support/inflector'
+require 'pry'
 
 class InteractiveRecord
   
@@ -9,7 +10,7 @@ class InteractiveRecord
   
   def self.column_names
     DB[:conn].results_as_hash = true 
-    sql = "pragma table_info('#{table_name}')"
+    sql = "PRAGMA table_info('#{table_name}')"
     column_names = []
     table_info = DB[:conn].execute(sql)
     table_info.each do |row|
@@ -18,9 +19,10 @@ class InteractiveRecord
    column_names.compact
  end 
  
-  self.column_names.each do |col_name|
-    attr_accessor col_name.to_sym
-  end 
+  # self.column_names.each do |col_name|
+  #   attr_accessor col_name.to_sym
+  #   end 
+ 
     
   def initialize(options={})
     options.each do |property, value|
@@ -50,8 +52,15 @@ class InteractiveRecord
     @id = DB[:conn].execute("SELECT last_insert_rowid() FROM #{table_name_for_insert}")[0][0]
   end
   
-  def self.find_by_name(name)
+    def self.find_by_name(name)
         sql = "SELECT * FROM #{self.table_name} WHERE name = '#{name}'"
         DB[:conn].execute(sql)
+    end 
+    
+    def self.find_by(attribute)
+      key = attribute.keys.first 
+      value = attribute.values.first 
+      sql = "SELECT * FROM #{self.table_name} WHERE #{key} = '#{value}'"
+      DB[:conn].execute(sql)
     end 
 end
