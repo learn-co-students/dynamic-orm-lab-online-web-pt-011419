@@ -61,8 +61,13 @@ class InteractiveRecord
     DB[:conn].execute(sql)
   end 
   
-  def self.find_by(key: value)
-    sql = "SELECT * FROM #{self.table_name} WHERE #{key} = '#{value}'"
+  def self.find_by(attributes)
+    sql = ""
+    
+    attributes.each do |key, value|
+      sql = "SELECT * FROM #{self.table_name} WHERE #{key} = '#{value}'"
+    end 
+    
     DB[:conn].execute(sql)
   end 
 end
